@@ -1,7 +1,6 @@
 library smooth_star_rating;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 
 typedef void RatingChangeCallback(double rating);
 
@@ -22,16 +21,15 @@ class SmoothStarRating extends StatelessWidget {
     this.starCount = 5,
     this.spacing=0.0,
     this.rating = 0.0,
-    this.defaultIconData,
-    this.onRatingChanged,
-    this.color,
-    this.borderColor,
+    required this.defaultIconData,
+    required this.onRatingChanged,
+    required this.color,
+    required this.borderColor,
     this.size = 25,
-    this.filledIconData,
-    this.halfFilledIconData,
-    this.allowHalfRating = true,
+    required this.filledIconData,
+    required this.halfFilledIconData,
+    this.allowHalfRating = true, required bool isReadOnly,
   }) {
-    assert(this.rating != null);
   }
 
   Widget buildStar(BuildContext context, int index) {
@@ -39,31 +37,31 @@ class SmoothStarRating extends StatelessWidget {
     if (index >= rating) {
       icon = new Icon(
         defaultIconData != null ? defaultIconData : Icons.star_border,
-        color: borderColor ?? Theme.of(context).primaryColor,
+        color: borderColor,
         size: size,
       );
     } else if (index > rating - (allowHalfRating ? 0.5 : 1.0) &&
         index < rating) {
       icon = new Icon(
         halfFilledIconData != null ? halfFilledIconData : Icons.star_half,
-        color: color ?? Theme.of(context).primaryColor,
+        color: color,
         size: size,
       );
     } else {
       icon = new Icon(
         filledIconData != null ? filledIconData : Icons.star,
-        color: color ?? Theme.of(context).primaryColor,
+        color: color,
         size: size,
       );
     }
 
     return new GestureDetector(
       onTap: () {
-        if (this.onRatingChanged != null) onRatingChanged(index + 1.0);
+ onRatingChanged(index + 1.0);
       },
       onHorizontalDragUpdate: (dragDetails) {
-        RenderBox box = context.findRenderObject();
-        var _pos = box.globalToLocal(dragDetails.globalPosition);
+        RenderBox? box = context.findRenderObject() as RenderBox?;
+        var _pos = box!.globalToLocal(dragDetails.globalPosition);
         var i = _pos.dx / size;
         var newRating = allowHalfRating ? i : i.round().toDouble();
         if (newRating > starCount) {
@@ -72,7 +70,7 @@ class SmoothStarRating extends StatelessWidget {
         if (newRating < 0) {
           newRating = 0.0;
         }
-        if (this.onRatingChanged != null) onRatingChanged(newRating);
+ onRatingChanged(newRating);
       },
       child: icon,
     );
